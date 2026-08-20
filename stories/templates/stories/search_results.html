@@ -1,0 +1,36 @@
+{% extends "stories/base_app.html" %}
+{% block title %}Search — StoryForge AI{% endblock %}
+{% block main %}
+<h1 style="font-size:24px;" class="mb-2">Results for "{{ q }}"</h1>
+
+{% if stories %}
+<h2 style="font-size:16px;" class="mb-1 mt-2">Stories</h2>
+<div class="grid-3 mb-3">
+  {% for s in stories %}
+  <a href="{% url 'story_detail' s.pk %}" class="card-flat" style="display:block;"><h3 style="font-size:14.5px;">{{ s.title }}</h3></a>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if characters %}
+<h2 style="font-size:16px;" class="mb-1">Characters</h2>
+<div class="grid-3 mb-3">
+  {% for c in characters %}
+  <a href="{% url 'story_detail' c.story.pk %}" class="card-flat" style="display:block;"><h3 style="font-size:14.5px;">{{ c.name }}</h3><p class="text-faint" style="font-size:12px;">{{ c.story.title }}</p></a>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if worlds %}
+<h2 style="font-size:16px;" class="mb-1">Worlds</h2>
+<div class="grid-3">
+  {% for w in worlds %}
+  <a href="{% url 'story_detail' w.story.pk %}" class="card-flat" style="display:block;"><h3 style="font-size:14.5px;">{{ w.name }}</h3></a>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if not stories and not characters and not worlds %}
+<div class="empty-state card-flat"><p style="color:var(--text);">No results{% if q %} for "{{ q }}"{% endif %}</p></div>
+{% endif %}
+{% endblock %}

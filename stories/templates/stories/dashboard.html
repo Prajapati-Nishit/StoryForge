@@ -1,0 +1,98 @@
+{% extends "stories/base_app.html" %}
+{% block title %}Dashboard — StoryForge AI{% endblock %}
+{% block main %}
+<div class="flex items-center justify-between mb-3">
+  <div>
+    <h1 style="font-size:28px;">Welcome back, {{ request.user.username }}</h1>
+    <p class="text-dim">Pick up where you left off, or start something new.</p>
+  </div>
+  <a href="{% url 'new_story' %}" class="btn btn-primary">New story</a>
+</div>
+
+<div class="grid-3 section">
+  <div class="card-flat">
+    <p class="text-faint" style="font-size:12px; text-transform:uppercase;">Stories created</p>
+    <p style="font-size:26px; font-family:'Fraunces',serif; margin-top:6px;">{{ stats.story_count }}</p>
+  </div>
+  <div class="card-flat">
+    <p class="text-faint" style="font-size:12px; text-transform:uppercase;">Words written</p>
+    <p style="font-size:26px; font-family:'Fraunces',serif; margin-top:6px;">{{ stats.word_count }}</p>
+  </div>
+  <div class="card-flat">
+    <p class="text-faint" style="font-size:12px; text-transform:uppercase;">Favorites</p>
+    <p style="font-size:26px; font-family:'Fraunces',serif; margin-top:6px;">{{ stats.favorite_count }}</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="flex items-center justify-between mb-2">
+    <h2 style="font-size:18px;">Continue writing</h2>
+    <a href="{% url 'library' %}" class="text-dim" style="font-size:13.5px;">View all</a>
+  </div>
+  {% if recent_stories %}
+  <div class="grid-3">
+    {% for story in recent_stories %}
+    <a href="{% url 'story_detail' story.pk %}" class="card-flat" style="display:block;">
+      <span class="badge badge-violet mb-1">{{ story.genre }}</span>
+      <h3 style="font-size:15.5px; margin-top:8px;">{{ story.title }}</h3>
+      <p class="text-dim" style="font-size:13px; margin-top:6px;">{{ story.summary|truncatewords:16 }}</p>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state card-flat">
+    <p style="font-size:15px; color:var(--text);">Start your first story</p>
+    <p class="text-dim mt-1">A single sentence is all it takes.</p>
+    <a href="{% url 'new_story' %}" class="btn btn-primary mt-2" style="display:inline-flex;">New story</a>
+  </div>
+  {% endif %}
+</div>
+
+{% if favorites %}
+<div class="section">
+  <h2 style="font-size:18px;" class="mb-2">Favorite stories</h2>
+  <div class="grid-4">
+    {% for story in favorites %}
+    <a href="{% url 'story_detail' story.pk %}" class="card-flat" style="display:block;">
+      <h3 style="font-size:14.5px;">{{ story.title }}</h3>
+      <p class="text-dim" style="font-size:12.5px; margin-top:4px;">{{ story.genre }}</p>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<div class="section">
+  <h2 style="font-size:18px;" class="mb-2">Quick templates</h2>
+  <div class="grid-4">
+    {% for t in templates %}
+    <form method="get" action="{% url 'new_story' %}">
+      <a href="{% url 'new_story' %}" class="card-flat" style="display:block;">
+        <span class="badge">{{ t.genre }}</span>
+        <p style="font-size:13.5px; margin-top:8px;">{{ t.seed }}</p>
+      </a>
+    </form>
+    {% endfor %}
+  </div>
+</div>
+
+{% if recent_characters %}
+<div class="section">
+  <h2 style="font-size:18px;" class="mb-2">Recent characters</h2>
+  <div class="row-list card-flat">
+    {% for c in recent_characters %}
+    <div class="row">
+      <div class="flex items-center gap-1">
+        <div class="avatar" style="width:32px;height:32px;font-size:13px;">{{ c.name|first }}</div>
+        <div>
+          <p style="font-size:14px;">{{ c.name }}</p>
+          <p class="text-faint" style="font-size:12px;">{{ c.role }} · {{ c.story.title }}</p>
+        </div>
+      </div>
+      <a href="{% url 'story_detail' c.story.pk %}" class="text-dim" style="font-size:13px;">View</a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

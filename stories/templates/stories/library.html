@@ -1,0 +1,41 @@
+{% extends "stories/base_app.html" %}
+{% block title %}Story library — StoryForge AI{% endblock %}
+{% block main %}
+<h1 style="font-size:26px;" class="mb-2">Story library</h1>
+
+<form method="get" class="flex gap-1 mb-3" style="flex-wrap:wrap; align-items:center;">
+  <input type="text" name="q" placeholder="Search by title, genre, theme..." value="{{ q }}" style="max-width:260px;">
+  <select name="sort" onchange="this.form.submit()">
+    <option value="recent" {% if sort == 'recent' %}selected{% endif %}>Recently updated</option>
+    <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Oldest first</option>
+    <option value="title" {% if sort == 'title' %}selected{% endif %}>Title A–Z</option>
+  </select>
+  <label class="chip" style="cursor:pointer;">
+    <input type="checkbox" name="favorites" value="1" {% if only_favorites %}checked{% endif %} onchange="this.form.submit()" style="margin-right:6px;">
+    Favorites only
+  </label>
+  <button type="submit" class="btn btn-sm">Search</button>
+</form>
+
+{% if stories %}
+<div class="grid-3">
+  {% for story in stories %}
+  <div class="card-flat">
+    <div class="flex items-center justify-between mb-1">
+      <span class="badge badge-violet">{{ story.genre }}</span>
+      {% if story.is_favorite %}<span style="color:var(--amber);">★</span>{% endif %}
+    </div>
+    <a href="{% url 'story_detail' story.pk %}"><h3 style="font-size:15px; margin-top:4px;">{{ story.title }}</h3></a>
+    <p class="text-dim" style="font-size:13px; margin-top:6px;">{{ story.summary|truncatewords:14 }}</p>
+    <p class="text-faint mt-1" style="font-size:11.5px;">Updated {{ story.updated_at|date:"M j, Y" }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state card-flat">
+  <p style="color:var(--text); font-size:15px;">No stories match yet</p>
+  <p class="text-dim mt-1">Try a different search, or forge something new.</p>
+  <a href="{% url 'new_story' %}" class="btn btn-primary mt-2" style="display:inline-flex;">New story</a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "stories/base.html" %}
+{% block title %}StoryForge AI — Turn your ideas into amazing stories{% endblock %}
+{% block body %}
+<div class="container" style="position:relative; z-index:1;">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark-lg">S</div>
+      StoryForge AI
+    </div>
+    <div class="flex gap-1">
+      <a href="{% url 'login' %}" class="btn btn-ghost">Log in</a>
+      <a href="{% url 'register' %}" class="btn btn-primary">Get started</a>
+    </div>
+  </div>
+
+  <div class="fade-up" style="text-align:center; padding:70px 0 40px;">
+    <span class="badge badge-violet mb-2" style="display:inline-flex;">AI story plot generator</span>
+    <h1 style="font-size:56px; line-height:1.08; margin:20px 0;">
+      Turn your ideas into<br><span class="gradient-text">amazing stories.</span>
+    </h1>
+    <p class="text-dim" style="font-size:18px; max-width:560px; margin:0 auto;">
+      A single sentence is enough. StoryForge builds the world, the cast, the plot twist, and the ending.
+    </p>
+  </div>
+
+  <div class="card container-narrow fade-up" style="margin-bottom:60px;">
+    <form action="{% url 'register' %}" method="get">
+      <textarea class="prompt-textarea" placeholder="A detective receives a phone call from the future..." rows="3" onclick="window.location.href='{% url 'register' %}'" readonly></textarea>
+      <div class="chip-row mb-2">
+        <span class="chip" onclick="window.location.href='{% url 'register' %}'">A boy finds a mysterious watch that runs backward.</span>
+        <span class="chip" onclick="window.location.href='{% url 'register' %}'">A girl discovers a hidden kingdom beneath the ocean.</span>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Generate story</button>
+    </form>
+  </div>
+
+  <div class="grid-3 container-narrow" style="margin-bottom:70px;">
+    <div class="card-flat" style="text-align:center;">
+      <h3 style="font-size:15px;">Full cast</h3>
+      <p class="text-dim" style="font-size:13.5px; margin-top:6px;">Protagonists, villains, and mentors with goals and flaws.</p>
+    </div>
+    <div class="card-flat" style="text-align:center;">
+      <h3 style="font-size:15px;">Living world</h3>
+      <p class="text-dim" style="font-size:13.5px; margin-top:6px;">Kingdoms, magic systems, climate, and culture.</p>
+    </div>
+    <div class="card-flat" style="text-align:center;">
+      <h3 style="font-size:15px;">Real plot twist</h3>
+      <p class="text-dim" style="font-size:13.5px; margin-top:6px;">Structure, chapters, dialogue, and a genuine turn.</p>
+    </div>
+  </div>
+
+  <div class="card container-narrow" style="text-align:center; margin-bottom:80px;">
+    <h2 style="font-size:26px; margin-bottom:10px;">Ready to forge your first story?</h2>
+    <p class="text-dim mb-2">Free to start. No credit card required.</p>
+    <a href="{% url 'register' %}" class="btn btn-primary">Create your account</a>
+  </div>
+
+  <div class="text-faint" style="text-align:center; padding-bottom:40px; font-size:13px;">
+    StoryForge AI — built with Django.
+  </div>
+</div>
+{% endblock %}

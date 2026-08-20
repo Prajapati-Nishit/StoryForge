@@ -1,0 +1,29 @@
+{% extends "stories/base_app.html" %}
+{% block title %}Profile — StoryForge AI{% endblock %}
+{% block main %}
+<h1 style="font-size:26px;" class="mb-2">Your profile</h1>
+<div class="card mb-3">
+  <div class="flex items-center gap-2">
+    <div class="avatar" style="width:60px;height:60px;font-size:22px;">{{ request.user.username|first|upper }}</div>
+    <div>
+      <p style="font-size:18px;">{{ request.user.username }}</p>
+      <p class="text-dim" style="font-size:13.5px;">{{ request.user.email }}</p>
+    </div>
+  </div>
+</div>
+<div class="grid-3 mb-3">
+  <div class="card-flat"><p class="text-faint" style="font-size:12px;">STORIES CREATED</p><p style="font-size:24px; font-family:'Fraunces',serif; margin-top:6px;">{{ stats.story_count }}</p></div>
+  <div class="card-flat"><p class="text-faint" style="font-size:12px;">WORDS WRITTEN</p><p style="font-size:24px; font-family:'Fraunces',serif; margin-top:6px;">{{ stats.word_count }}</p></div>
+  <div class="card-flat"><p class="text-faint" style="font-size:12px;">FAVORITE GENRE</p><p style="font-size:24px; font-family:'Fraunces',serif; margin-top:6px;">{{ stats.favorite_genre }}</p></div>
+</div>
+<div class="card">
+  <h2 style="font-size:17px;" class="mb-2">Achievements</h2>
+  {% if stats.achievements %}
+  <div class="chip-row">
+    {% for a in stats.achievements %}<span class="badge badge-amber">{{ a }}</span>{% endfor %}
+  </div>
+  {% else %}
+  <p class="text-dim">Generate your first story to start earning badges.</p>
+  {% endif %}
+</div>
+{% endblock %}

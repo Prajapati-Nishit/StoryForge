@@ -1,0 +1,34 @@
+{% extends "stories/base.html" %}
+{% block body %}
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <span class="font-display" style="font-size:16px;">StoryForge</span>
+    </div>
+    <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"><span class="dot"></span>Dashboard</a>
+    <a href="{% url 'new_story' %}" class="nav-link {% if request.resolver_match.url_name == 'new_story' %}active{% endif %}"><span class="dot"></span>New story</a>
+    <a href="{% url 'library' %}" class="nav-link {% if request.resolver_match.url_name == 'library' %}active{% endif %}"><span class="dot"></span>Story library</a>
+    <a href="{% url 'characters' %}" class="nav-link {% if request.resolver_match.url_name == 'characters' %}active{% endif %}"><span class="dot"></span>Characters</a>
+    <a href="{% url 'worlds' %}" class="nav-link {% if request.resolver_match.url_name == 'worlds' %}active{% endif %}"><span class="dot"></span>World builder</a>
+    <a href="{% url 'templates' %}" class="nav-link {% if request.resolver_match.url_name == 'templates' %}active{% endif %}"><span class="dot"></span>Templates</a>
+    <a href="{% url 'prompt_history' %}" class="nav-link {% if request.resolver_match.url_name == 'prompt_history' %}active{% endif %}"><span class="dot"></span>Prompt history</a>
+    <a href="{% url 'archive' %}" class="nav-link {% if request.resolver_match.url_name == 'archive' %}active{% endif %}"><span class="dot"></span>Archive</a>
+
+    <div class="sidebar-section">Account</div>
+    <a href="{% url 'profile' %}" class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}"><span class="dot"></span>Profile</a>
+    <!-- <a href="{% url 'settings' %}" class="nav-link {% if request.resolver_match.url_name == 'settings' %}active{% endif %}"><span class="dot"></span>Settings</a> -->
+    <form method="post" action="{% url 'logout' %}" style="margin-top:auto; padding-top:16px;">
+      {% csrf_token %}
+      <button type="submit" class="nav-link" style="width:100%; text-align:left; background:none; border:none; cursor:pointer; font-family:inherit;"><span class="dot"></span>Log out</button>
+    </form>
+  </aside>
+
+  <main class="main-area">
+    <form action="{% url 'search' %}" method="get" style="max-width:340px; margin-bottom:28px;">
+      <input type="text" name="q" placeholder="Search stories, characters, worlds..." value="{{ request.GET.q|default:'' }}">
+    </form>
+    {% block main %}{% endblock %}
+  </main>
+</div>
+{% endblock %}

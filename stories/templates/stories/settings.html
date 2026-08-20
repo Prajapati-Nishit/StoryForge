@@ -1,0 +1,19 @@
+{% extends "stories/base_app.html" %}
+{% block title %}Settings — StoryForge AI{% endblock %}
+{% block main %}
+<h1 style="font-size:26px;" class="mb-2">Settings</h1>
+<div class="card container-narrow" style="margin:0;">
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="field">
+      <label>{{ field.label }}</label>
+      {{ field }}
+      {% if field.help_text %}<p class="text-faint mt-1" style="font-size:12px;">{{ field.help_text }}</p>{% endif %}
+    </div>
+    {% endfor %}
+    <p class="text-faint mb-2" style="font-size:12.5px;">Add your own Anthropic API key to enable real AI story generation. Without one, StoryForge uses its built-in offline generator.</p>
+    <button type="submit" class="btn btn-primary">Save settings</button>
+  </form>
+</div>
+{% endblock %}

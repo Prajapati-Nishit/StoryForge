@@ -1,0 +1,149 @@
+{% extends "stories/base_app.html" %}
+{% block title %}{{ story.title }} — StoryForge AI{% endblock %}
+{% block main %}
+
+<div class="flex items-center justify-between mb-2" style="flex-wrap:wrap; gap:10px;">
+  <div class="flex gap-1" style="flex-wrap:wrap;">
+    <form method="post" action="{% url 'toggle_favorite' story.pk %}">{% csrf_token %}
+      <button class="btn btn-sm" type="submit">{% if story.is_favorite %}★ Favorited{% else %}☆ Favorite{% endif %}</button>
+    </form>
+    <form method="post" action="{% url 'duplicate_story' story.pk %}">{% csrf_token %}
+      <button class="btn btn-sm" type="submit">Duplicate</button>
+    </form>
+    <form method="post" action="{% url 'toggle_archive' story.pk %}">{% csrf_token %}
+      <button class="btn btn-sm" type="submit">{% if story.is_archived %}Unarchive{% else %}Archive{% endif %}</button>
+    </form>
+    <form method="post" action="{% url 'delete_story' story.pk %}" onsubmit="return confirm('Delete this story permanently?');">{% csrf_token %}
+      <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+    </form>
+  </div>
+  <div class="flex gap-1">
+    <a href="{% url 'download_story' story.pk 'txt' %}" class="btn btn-sm">TXT</a>
+    <a href="{% url 'download_story' story.pk 'md' %}" class="btn btn-sm">Markdown</a>
+    <a href="{% url 'download_story' story.pk 'docx' %}" class="btn btn-sm">DOCX</a>
+    <a href="{% url 'download_story' story.pk 'pdf' %}" class="btn btn-sm">PDF</a>
+  </div>
+</div>
+
+<div class="cover fade-up section">
+  <div class="flex items-center gap-1 mb-2" style="flex-wrap:wrap;">
+    <span class="badge badge-violet">{{ story.genre }}</span>
+    <span class="badge">{{ story.theme }}</span>
+    <span class="badge">{{ story.tone }}</span>
+    {% if story.generated_by_ai %}<span class="badge badge-teal">AI generated</span>{% else %}<span class="badge">Offline generator</span>{% endif %}
+  </div>
+  <h1 style="font-size:38px; line-height:1.15;">{{ story.title }}</h1>
+  {% if story.tagline %}<p style="color:var(--fuchsia); font-style:italic; margin-top:10px;">{{ story.tagline }}</p>{% endif %}
+  <p class="text-dim mt-2" style="max-width:640px;">{{ story.summary }}</p>
+  <p class="text-faint mt-2" style="font-size:12.5px;">{{ story.word_count }} words · {{ story.reading_time_minutes }} min read</p>
+</div>
+
+{% if story.full_story %}
+<div class="card section">
+  <h2 style="font-size:19px;" class="mb-2">Full Story</h2>
+  <div class="text-dim" style="max-width:720px; font-size:15px; line-height:1.7;">{{ story.full_story|linebreaks }}</div>
+</div>
+{% endif %}
+
+<div class="card section">
+  <h2 style="font-size:19px;" class="mb-2">Characters</h2>
+  <div class="grid-2">
+    {% for c in story.characters.all %}
+    <div class="card-flat">
+      <div class="flex items-center gap-1 mb-2">
+        <div class="avatar">{{ c.name|first }}</div>
+        <div>
+          <p style="font-size:15px;">{{ c.name }} <span class="text-faint" style="font-weight:400;">· {{ c.age }}</span></p>
+          <p class="text-faint" style="font-size:12px;">{{ c.role }}{% if c.occupation %} · {{ c.occupation }}{% endif %}</p>
+        </div>
+      </div>
+      <p class="text-dim" style="font-size:13.5px;"><b style="color:var(--text-faint); font-weight:500;">Personality:</b> {{ c.personality }}</p>
+      <p class="text-dim" style="font-size:13.5px;"><b style="color:var(--text-faint); font-weight:500;">Goal:</b> {{ c.goal }}</p>
+      <p class="text-dim" style="font-size:13.5px;"><b style="color:var(--text-faint); font-weight:500;">Weakness:</b> {{ c.weakness }}</p>
+      <p class="text-dim" style="font-size:13.5px;"><b style="color:var(--text-faint); font-weight:500;">Skills:</b> {{ c.skills }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% if story.world %}
+<div class="card section">
+  <h2 style="font-size:19px;" class="mb-1">World</h2>
+  <p style="font-size:16px;">{{ story.world.name }}</p>
+  <p class="text-dim mb-2">{{ story.world.description }}</p>
+  <div class="grid-3">
+    <div class="card-flat"><p class="text-faint" style="font-size:11.5px;">KINGDOMS / CITIES</p><p class="mt-1" style="font-size:13.5px;">{{ story.world.kingdoms_cities }}</p></div>
+    <div class="card-flat"><p class="text-faint" style="font-size:11.5px;">MAGIC / TECHNOLOGY</p><p class="mt-1" style="font-size:13.5px;">{{ story.world.magic_or_technology }}</p></div>
+    <div class="card-flat"><p class="text-faint" style="font-size:11.5px;">CULTURE</p><p class="mt-1" style="font-size:13.5px;">{{ story.world.culture }}</p></div>
+  </div>
+</div>
+{% endif %}
+
+<div class="card section">
+  <h2 style="font-size:19px;" class="mb-2">Story structure</h2>
+  <div class="timeline-item"><div class="timeline-dot-col"><div class="timeline-dot"></div><div class="timeline-line"></div></div><div style="padding-bottom:14px;"><p class="text-faint" style="font-size:11.5px; text-transform:uppercase;">Beginning</p><p style="font-size:14px;">{{ story.structure_beginning }}</p></div></div>
+  <div class="timeline-item"><div class="timeline-dot-col"><div class="timeline-dot"></div><div class="timeline-line"></div></div><div style="padding-bottom:14px;"><p class="text-faint" style="font-size:11.5px; text-transform:uppercase;">Conflict</p><p style="font-size:14px;">{{ story.structure_conflict }}</p></div></div>
+  <div class="timeline-item"><div class="timeline-dot-col"><div class="timeline-dot"></div><div class="timeline-line"></div></div><div style="padding-bottom:14px;"><p class="text-faint" style="font-size:11.5px; text-transform:uppercase;">Rising action</p><p style="font-size:14px;">{{ story.structure_rising_action }}</p></div></div>
+  <div class="timeline-item"><div class="timeline-dot-col"><div class="timeline-dot"></div><div class="timeline-line"></div></div><div style="padding-bottom:14px;"><p class="text-faint" style="font-size:11.5px; text-transform:uppercase;">Climax</p><p style="font-size:14px;">{{ story.structure_climax }}</p></div></div>
+  <div class="timeline-item"><div class="timeline-dot-col"><div class="timeline-dot"></div></div><div><p class="text-faint" style="font-size:11.5px; text-transform:uppercase;">Ending</p><p style="font-size:14px;">{{ story.structure_ending }}</p></div></div>
+</div>
+
+<div class="card section">
+  <div class="flex items-center justify-between mb-2">
+    <h2 style="font-size:19px;">Chapters</h2>
+    <form method="post" action="{% url 'regenerate' story.pk 'continue' %}">
+      {% csrf_token %}
+      <button class="btn btn-sm btn-primary" type="submit">Continue story</button>
+    </form>
+  </div>
+  {% for ch in story.chapters.all %}
+  <details class="card-flat mb-1">
+    <summary style="cursor:pointer; font-size:14.5px;">Chapter {{ ch.order }}: {{ ch.title }}</summary>
+    <p class="text-dim mt-1" style="font-size:13.5px;">{{ ch.summary }}</p>
+  </details>
+  {% endfor %}
+</div>
+
+{% if story.dialogue_lines.all %}
+<div class="card section">
+  <h2 style="font-size:19px;" class="mb-2">Dialogue</h2>
+  <div style="max-width:520px;">
+    {% for d in story.dialogue_lines.all %}
+    <div class="bubble-row {% cycle '' 'right' %}">
+      <div class="bubble"><p class="who">{{ d.character_name }}</p><p style="font-size:14px;">{{ d.line }}</p></div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<div class="twist-box section">
+  <div class="flex items-center justify-between mb-1">
+    <span class="badge badge-amber">Plot twist</span>
+    <form method="post" action="{% url 'regenerate' story.pk 'twist' %}">
+      {% csrf_token %}
+      <button class="btn btn-sm" type="submit">Regenerate twist</button>
+    </form>
+  </div>
+  <p style="font-size:17px; font-family:'Fraunces',serif;">{{ story.plot_twist }}</p>
+</div>
+
+<div class="grid-2 section">
+  <div class="card">
+    <div class="flex items-center justify-between mb-1">
+      <h2 style="font-size:18px;">Ending</h2>
+      <form method="post" action="{% url 'regenerate' story.pk 'ending' %}">
+        {% csrf_token %}
+        <button class="btn btn-sm" type="submit">New ending</button>
+      </form>
+    </div>
+    <p class="text-dim">{{ story.ending }}</p>
+  </div>
+  <div class="card">
+    <h2 style="font-size:18px;" class="mb-1">Sequel ideas</h2>
+    {% for s in story.sequel_ideas.all %}
+    <p class="text-dim mt-1" style="font-size:14px;">→ {{ s.text }}</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

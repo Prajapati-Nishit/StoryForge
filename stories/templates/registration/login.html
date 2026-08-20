@@ -1,0 +1,27 @@
+{% extends "stories/base.html" %}
+{% block title %}Log in — StoryForge AI{% endblock %}
+{% block body %}
+<div class="container-narrow" style="position:relative; z-index:1; padding-top:60px;">
+  <div class="flex items-center gap-1 mb-3">
+    <div class="brand-mark-lg">S</div>
+    <span class="font-display" style="font-size:18px;">StoryForge AI</span>
+  </div>
+  <div class="card fade-up" style="max-width:420px;">
+    <h2 style="font-size:24px; margin-bottom:6px;">Welcome back</h2>
+    <p class="text-dim mb-3" style="font-size:14px;">Log in to continue writing.</p>
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="field">
+          <label>{{ field.label }}</label>
+          {{ field }}
+        </div>
+      {% endfor %}
+      {% if form.errors %}<p style="color:var(--rose); font-size:12.5px; margin-bottom:12px;">Your username and password didn't match.</p>{% endif %}
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" class="btn btn-primary btn-block">Log in</button>
+    </form>
+    <p class="text-dim mt-2" style="font-size:13.5px;">New here? <a href="{% url 'register' %}" style="color:var(--violet);">Create an account</a></p>
+  </div>
+</div>
+{% endblock %}

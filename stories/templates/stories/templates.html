@@ -1,0 +1,14 @@
+{% extends "stories/base_app.html" %}
+{% block title %}Templates — StoryForge AI{% endblock %}
+{% block main %}
+<h1 style="font-size:26px;" class="mb-2">Quick templates</h1>
+<div class="grid-3">
+  {% for t in templates %}
+  <a href="{% url 'new_story' %}" class="card-flat" style="display:block;">
+    <span class="badge badge-violet">{{ t.genre }}</span>
+    <h3 style="font-size:15px; margin-top:8px;">{{ t.name }}</h3>
+    <p class="text-dim mt-1" style="font-size:13px;">{{ t.seed }}</p>
+  </a>
+  {% endfor %}
+</div>
+{% endblock %}

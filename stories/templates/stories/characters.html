@@ -1,0 +1,26 @@
+{% extends "stories/base_app.html" %}
+{% block title %}Characters — StoryForge AI{% endblock %}
+{% block main %}
+<h1 style="font-size:26px;" class="mb-2">All characters</h1>
+{% if characters %}
+<div class="grid-3">
+  {% for c in characters %}
+  <a href="{% url 'story_detail' c.story.pk %}" class="card-flat" style="display:block;">
+    <div class="flex items-center gap-1 mb-1">
+      <div class="avatar">{{ c.name|first }}</div>
+      <div>
+        <p style="font-size:14.5px;">{{ c.name }}</p>
+        <p class="text-faint" style="font-size:12px;">{{ c.role }}</p>
+      </div>
+    </div>
+    <p class="text-dim mt-1" style="font-size:12.5px;">from {{ c.story.title }}</p>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state card-flat">
+  <p style="color:var(--text); font-size:15px;">No characters yet</p>
+  <p class="text-dim mt-1">Generate a story and its cast will appear here.</p>
+</div>
+{% endif %}
+{% endblock %}

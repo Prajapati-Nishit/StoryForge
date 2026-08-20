@@ -1,0 +1,110 @@
+{% extends "stories/base_app.html" %}
+{% block title %}New story — StoryForge AI{% endblock %}
+{% block main %}
+<h1 style="font-size:26px;" class="mb-1">Describe your story idea</h1>
+<p class="text-dim mb-3">One sentence is enough. StoryForge fills in the rest.</p>
+
+<form method="post" id="generate-form">
+  {% csrf_token %}
+  <div class="card container-narrow" style="margin:0;">
+    {{ form.seed_prompt }}
+    <div class="chip-row mt-2 mb-2">
+      <span class="chip" onclick="document.getElementById('id_seed_prompt').value=this.textContent">A girl discovers a hidden kingdom beneath the ocean.</span>
+      <span class="chip" onclick="document.getElementById('id_seed_prompt').value=this.textContent">A boy finds a mysterious watch that runs backward.</span>
+    </div>
+
+    <div class="section" style="border-top:1px solid var(--border); padding-top:18px;">
+      <p class="text-faint mb-1" style="font-size:12px; text-transform:uppercase;">Genre</p>
+      <div class="chip-row mb-2">
+        {% for value, label in form.genre.field.choices %}
+        <label>
+          <input type="radio" name="genre" value="{{ value }}" class="chip-input" {% if value == form.genre.initial %}checked{% endif %}>
+          <span class="chip">{{ label }}</span>
+        </label>
+        {% endfor %}
+      </div>
+
+      <p class="text-faint mb-1" style="font-size:12px; text-transform:uppercase;">Theme</p>
+      <div class="chip-row mb-2">
+        {% for value, label in form.theme.field.choices %}
+        <label>
+          <input type="radio" name="theme" value="{{ value }}" class="chip-input" {% if value == form.theme.initial %}checked{% endif %}>
+          <span class="chip">{{ label }}</span>
+        </label>
+        {% endfor %}
+      </div>
+
+      <p class="text-faint mb-1" style="font-size:12px; text-transform:uppercase;">Tone</p>
+      <div class="chip-row mb-2">
+        {% for value, label in form.tone.field.choices %}
+        <label>
+          <input type="radio" name="tone" value="{{ value }}" class="chip-input" {% if value == form.tone.initial %}checked{% endif %}>
+          <span class="chip">{{ label }}</span>
+        </label>
+        {% endfor %}
+      </div>
+
+      <p class="text-faint mb-1" style="font-size:12px; text-transform:uppercase;">Audience</p>
+      <div class="chip-row mb-2">
+        {% for value, label in form.audience.field.choices %}
+        <label>
+          <input type="radio" name="audience" value="{{ value }}" class="chip-input" {% if value == form.audience.initial %}checked{% endif %}>
+          <span class="chip">{{ label }}</span>
+        </label>
+        {% endfor %}
+      </div>
+
+      <p class="text-faint mb-1" style="font-size:12px; text-transform:uppercase;">Writing style</p>
+      <div class="chip-row mb-2">
+        {% for value, label in form.style.field.choices %}
+        <label>
+          <input type="radio" name="style" value="{{ value }}" class="chip-input" {% if value == form.style.initial %}checked{% endif %}>
+          <span class="chip">{{ label }}</span>
+        </label>
+        {% endfor %}
+      </div>
+
+      <p class="text-faint mb-1" style="font-size:12px; text-transform:uppercase;">Length</p>
+      <div class="chip-row">
+        {% for value, label in form.length.field.choices %}
+        <label>
+          <input type="radio" name="length" value="{{ value }}" class="chip-input" {% if value == form.length.initial %}checked{% endif %}>
+          <span class="chip">{{ label }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block mt-3">
+      Generate story
+    </button>
+  </div>
+</form>
+
+<div id="loading-overlay" style="display:none; position:fixed; inset:0; background:rgba(5,6,15,0.88); z-index:100; align-items:center; justify-content:center; flex-direction:column;">
+  <div class="spinner"></div>
+  <p id="loading-message" class="mt-3" style="font-size:16px; font-family:'Fraunces',serif;">Generating characters...</p>
+  <div class="loading-dots" id="loading-dots"></div>
+</div>
+
+<script>
+const messages = ["Generating characters...", "Creating world...", "Designing plot...", "Writing dialogue...", "Adding plot twist...", "Generating ending..."];
+const form = document.getElementById('generate-form');
+const overlay = document.getElementById('loading-overlay');
+const msgEl = document.getElementById('loading-message');
+const dotsEl = document.getElementById('loading-dots');
+dotsEl.innerHTML = messages.map(()=>'<span></span>').join('');
+
+form.addEventListener('submit', function(){
+  overlay.style.display = 'flex';
+  let i = 0;
+  const dots = dotsEl.querySelectorAll('span');
+  dots[0].style.background = 'var(--violet)';
+  setInterval(function(){
+    i = (i + 1) % messages.length;
+    msgEl.textContent = messages[i];
+    dots.forEach((d, idx) => d.style.background = idx <= i ? 'var(--violet)' : 'var(--border)');
+  }, 1100);
+});
+</script>
+{% endblock %}

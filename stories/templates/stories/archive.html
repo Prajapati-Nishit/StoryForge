@@ -1,0 +1,24 @@
+{% extends "stories/base_app.html" %}
+{% block title %}Archive — StoryForge AI{% endblock %}
+{% block main %}
+<h1 style="font-size:26px;" class="mb-2">Archived stories</h1>
+{% if stories %}
+<div class="grid-3">
+  {% for story in stories %}
+  <div class="card-flat">
+    <span class="badge">{{ story.genre }}</span>
+    <a href="{% url 'story_detail' story.pk %}"><h3 style="font-size:15px; margin-top:8px;">{{ story.title }}</h3></a>
+    <form method="post" action="{% url 'toggle_archive' story.pk %}" class="mt-1">
+      {% csrf_token %}
+      <button class="btn btn-sm" type="submit">Restore</button>
+    </form>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state card-flat">
+  <p style="color:var(--text); font-size:15px;">Nothing archived</p>
+  <p class="text-dim mt-1">Stories you archive from the library show up here.</p>
+</div>
+{% endif %}
+{% endblock %}

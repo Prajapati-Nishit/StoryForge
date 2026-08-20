@@ -1,0 +1,25 @@
+{% extends "stories/base_app.html" %}
+{% block title %}Prompt history — StoryForge AI{% endblock %}
+{% block main %}
+<h1 style="font-size:26px;" class="mb-2">Prompt history</h1>
+{% if history %}
+<div class="row-list card">
+  {% for h in history %}
+  <div class="row">
+    <div>
+      <p style="font-size:14px;">{{ h.prompt_text }}</p>
+      <p class="text-faint" style="font-size:12px; margin-top:4px;">{{ h.genre }} · {{ h.tone }} · {{ h.created_at|date:"M j, Y H:i" }}</p>
+    </div>
+    {% if h.resulting_story %}
+    <a href="{% url 'story_detail' h.resulting_story.pk %}" class="btn btn-sm">View story</a>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state card-flat">
+  <p style="color:var(--text); font-size:15px;">No prompts yet</p>
+  <p class="text-dim mt-1">Every seed you generate a story from is saved here for reuse.</p>
+</div>
+{% endif %}
+{% endblock %}
